@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+	<edmx:DataServices>
+		<Schema Namespace="CatalogService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityContainer Name="EntityContainer">
+				<EntitySet Name="Materials" EntityType="CatalogService.Materials"/>
+			</EntityContainer>
+			<EntityType Name="Materials">
+				<Key>
+					<PropertyRef Name="matnumber"/>
+				</Key>
+				<Property Name="matnumber" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="descr" Type="Edm.String" MaxLength="50"/>
+				<Property Name="purchdoc" Type="Edm.String" MaxLength="20"/>
+				<Property Name="item" Type="Edm.Int32"/>
+				<Property Name="plant" Type="Edm.String" MaxLength="10"/>
+				<Property Name="curprice" Type="Edm.Decimal" Scale="2" Precision="9"/>
+				<Property Name="proprice" Type="Edm.Decimal" Scale="2" Precision="9"/>
+				<Property Name="pricevar" Type="Edm.String" MaxLength="10"/>
+				<Property Name="validity" Type="Edm.Date"/>
+				<Property Name="comments" Type="Edm.String" MaxLength="50"/>
+			</EntityType>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

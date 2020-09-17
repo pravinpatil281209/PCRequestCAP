@@ -1,0 +1,106 @@
+ID: PriceChangeApprv
+_schema-version: '2.1'
+parameters:
+  deploy_mode: html5-repo
+version: 0.0.1
+modules:
+  - name: pricechangeapprv-approuter
+    type: approuter.nodejs
+    path: pricechangeapprv-approuter
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: PriceChangeApprv_html5_repo_runtime
+      - name: srv_api
+        group: destinations
+        properties:
+          forwardAuthToken: true
+          name: srv_api
+          url: '~{url}'
+      - name: uaa_PriceChangeApprv
+      - name: portal_resources_PriceChangeApprv
+  - name: PriceChangeApprv_ui_deployer
+    type: com.sap.html5.application-content
+    path: PriceChangeApprv_ui_deployer
+    requires:
+      - name: PriceChangeApprv_html5_repo_host
+    build-parameters:
+      requires:
+        - name: PCReqUI
+          artifacts:
+            - './*'
+          target-path: resources/PCReqUI
+  - name: PriceChangeApprv-db
+    type: hdb
+    path: db
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: PriceChangeApprv-db-hdi-container
+  - name: PriceChangeApprv-srv
+    type: nodejs
+    path: srv
+    parameters:
+      memory: 512M
+      disk-quota: 512M
+    provides:
+      - name: srv_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: PriceChangeApprv-db-hdi-container
+  - name: PCReqUI
+    type: html5
+    path: PCReqUI
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - npm run build
+      supported-platforms: []
+      build-result: dist
+  - name: PriceChangeFL
+    type: com.sap.portal.content
+    path: PriceChangeFL
+    parameters:
+      stack: cflinuxfs3
+      memory: 128M
+      buildpack: 'https://github.com/cloudfoundry/nodejs-buildpack/releases/download/v1.6.39/nodejs-buildpack-cflinuxfs3-v1.6.39.zip'
+    requires:
+      - name: portal_resources_PriceChangeApprv
+      - name: uaa_PriceChangeApprv
+      - name: PriceChangeApprv_html5_repo_host
+      - name: PriceChangeApprv_ui_deployer
+resources:
+  - name: PriceChangeApprv_html5_repo_runtime
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+    type: org.cloudfoundry.managed-service
+  - name: PriceChangeApprv_html5_repo_host
+    parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+    type: org.cloudfoundry.managed-service
+  - name: PriceChangeApprv-db-hdi-container
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-container-name: '${service-name}'
+  - name: uaa_PriceChangeApprv
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
+    type: org.cloudfoundry.managed-service
+  - name: dest_PriceChangeApprv
+    parameters:
+      service-plan: lite
+      service: destination
+    type: org.cloudfoundry.managed-service
+  - name: portal_resources_PriceChangeApprv
+    parameters:
+      service-plan: standard
+      service: portal
+    type: org.cloudfoundry.managed-service

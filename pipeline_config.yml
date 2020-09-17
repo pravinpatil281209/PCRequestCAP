@@ -45,11 +45,9 @@ stages:
 #    nonErpDestinations:
 #      - 'myCustomDestination'
 
-#  productionDeployment:
-#    cfTargets:
-#      - org: 'myOrg'
-#        space: 'mySpace'
-#        apiEndpoint: 'https://'
-#        appName: 'myAppName'
-#        manifest: 'manifest.yml'
-#        credentialsId: 'myDeploymentCredentialsId'
+  productionDeployment:
+    cfTargets:
+      - org: 'aa04aeb3trial'
+        space: 'dev'
+        apiEndpoint: 'https://api.cf.us10.hana.ondemand.com'
+        credentialsId: 'PCReqCAPID'
